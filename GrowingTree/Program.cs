@@ -56,6 +56,11 @@ namespace GrowingTree
         {
             DrawFeatureRooms();//Initialize
             const int threadSleepInterval = 100;
+            var doors = Door.GenerateDoors(level);
+            foreach (var door in doors)
+            {
+                level.InsertFeature(door);
+            }
             DrawGrid.Draw(level);
             
         }
