@@ -92,6 +92,10 @@ namespace GrowingTree.Display
             grid = new Data[Width, Height];
         }
 
+        public static void DebugDraw(Feature feature)
+        {
+            Draw(feature);
+        }
         public static void Draw(Feature feature)
         {
             var d = new DrawGrid(feature.Width, feature.Height);
@@ -101,7 +105,7 @@ namespace GrowingTree.Display
 
         public void Place(char c)
         {
-            Place(new Data{Character = c, Background = CurrentBackground, Foreground = CurrentForeground});
+            Place(new Data { Character = c, Background = CurrentBackground, Foreground = CurrentForeground });
         }
         public void Place(Data data)
         {
@@ -136,7 +140,7 @@ namespace GrowingTree.Display
                 return;
             };
             CharInfo[] buf = new CharInfo[Width * Height];
-            SmallRect rect = new SmallRect() { Left = 0, Top = 0, Right = 60, Bottom = 50 };
+            SmallRect rect = new SmallRect() { Left = 0, Top = 0, Right = (short) Width, Bottom = (short) Height };
 
             for (var y = 0; y < Height; y++)
             {
@@ -151,7 +155,7 @@ namespace GrowingTree.Display
                 }
             }
             bool b = WriteConsoleOutput(h, buf,
-                new Coord() { X = 60, Y = 50 },
+                new Coord() { X = (short) Width, Y = (short) Height },
                 new Coord() { X = 0, Y = 0 },
                 ref rect);
             if (!b)

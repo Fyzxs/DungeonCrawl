@@ -33,15 +33,15 @@ namespace GrowingTree
 
     class Boundary
     {
-        private readonly Point coords;
+        internal readonly Point Coords;
 
         public int Left
         {
-            get { return coords.X; }
+            get { return Coords.X; }
         }
         public int Top
         {
-            get { return coords.Y; }
+            get { return Coords.Y; }
         }
 
         public int Width;
@@ -49,7 +49,7 @@ namespace GrowingTree
 
         public Boundary(Point point)
         {
-            coords = point;
+            Coords = point;
         }
         public Boundary(Point point, int width, int height) : this(point)
         {

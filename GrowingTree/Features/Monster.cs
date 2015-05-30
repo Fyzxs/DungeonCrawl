@@ -19,52 +19,60 @@ namespace GrowingTree.Features
             Console.Write("M");
         }
 
-        public override void Move()
+        public override void Move(ConsoleKey key = ConsoleKey.NoName)
         {
             Message = "";
             var x = new []{ConsoleKey.DownArrow, ConsoleKey.UpArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow};
             var moved = false;
             
             var dir = Rand.Next(10) < 7 ? previousDirection : x[Rand.Next(4)];
-            //while (!moved)
-            //{
+            while (!moved)
+            {
 
-            //    switch (dir)
-            //    {
-            //        case ConsoleKey.DownArrow:
-            //            moved = Move(0, +1);
-            //            break;
-            //        case ConsoleKey.UpArrow:
-            //            moved = Move(0, -1);
-            //            break;
-            //        case ConsoleKey.LeftArrow:
-            //            moved = Move(-1, 0);
-            //            break;
-            //        case ConsoleKey.RightArrow:
-            //            moved = Move(+1, 0);
-            //            break;
-            //    }
-            //    if (moved)
-            //    {
-            //        previousDirection = dir;
-            //    }
-            //    else
-            //    {
-            //        dir = x[Rand.Next(4)];
-            //    }
-            //}
+                switch (dir)
+                {
+                    case ConsoleKey.DownArrow:
+                        moved = Move(0, +1);
+                        break;
+                    case ConsoleKey.UpArrow:
+                        moved = Move(0, -1);
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        moved = Move(-1, 0);
+                        break;
+                    case ConsoleKey.RightArrow:
+                        moved = Move(+1, 0);
+                        break;
+                }
+                if (moved)
+                {
+                    previousDirection = dir;
+                }
+                else
+                {
+                    dir = x[Rand.Next(4)];
+                }
+            }
         }
 
-        //private bool Move(int xMod, int yMod)
-        //{
-        //    var canMove = Location.x + xMod >= 0 && Location.x + xMod < Level.Instance.Width &&
-        //                    Location.y + yMod >=0 && Location.y + yMod < Level.Instance.Height &&
-        //                    map[Location.x + xMod, Location.y + yMod] != Level.TileType.Empty;
-        //    if (!canMove) return false;
 
-        //    Location.x += xMod;
-        //    Location.y += yMod;
-        //    return true;
-        //}
+
+        private bool Move(int xMod, int yMod)
+        {
+            var map = Level.Instance.FeatureGrid;
+
+            if (ThisBoundary.Coords.X + xMod < 0 ||
+                ThisBoundary.Coords.Y + yMod < 0 ||
+                ThisBoundary.Coords.X + xMod >= Level.Instance.Width ||
+                ThisBoundary.Coords.Y + yMod >= Level.Instance.Height ||
+                NullFeature.IsNullFeature(map[ThisBoundary.Coords.X + xMod, ThisBoundary.Coords.Y + yMod]))
+            {
+                return false;
+            }
+
+            ThisBoundary.Coords.X += xMod;
+            ThisBoundary.Coords.Y += yMod;
+            return true;
+        }
     }
 }

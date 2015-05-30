@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GrowingTree.Display;
 using GrowingTree.Features;
@@ -14,8 +15,6 @@ namespace GrowingTree
 {
     class Program
     {
-        private static readonly Level level = new Level(60, 50);
-
         internal static class SystemState
         {
             public static bool ShouldQuit = false;
@@ -39,14 +38,7 @@ namespace GrowingTree
             Console.Clear();
 
             MainLoop();
-            //DrawRooms();
-            //DrawMaze();
-
-            //player = new Player(Level.Instance.Rooms[0].Source);
-            //monster = new Monster(Level.Instance.Rooms[Level.Instance.Rooms.Count - 1].Source);
-
-            //BeAPlayer();
-            
+            Console.SetCursorPosition(0, 80-10);
             Console.WriteLine();
             Console.WriteLine("Done");
             Console.ReadLine();
@@ -54,15 +46,37 @@ namespace GrowingTree
 
         static void MainLoop()
         {
-            DrawFeatureRooms();//Initialize
-            const int threadSleepInterval = 100;
-            var doors = Door.GenerateDoors(level);
-            foreach (var door in doors)
-            {
-                level.InsertFeature(door);
-            }
+            var level = LevelCreator.CreateLevel(60, 50);
             DrawGrid.Draw(level);
-            
+            var startRoom = level.GetRooms().First();
+            level.InsertFeature(new Player(new Point(startRoom.Left + 1, startRoom.Top + 1)));
+            while (!SystemState.ShouldQuit)
+            {
+                Thread.Sleep(100);
+                ProcessInput();
+                DrawGrid.Draw(level);
+            }
+        }
+
+        static void ProcessInput()
+        {
+            if (!Console.KeyAvailable) return;
+
+            var key = Console.ReadKey();
+            //Clear the buffer
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(false);
+            }
+            switch (key.Key)
+            {
+                case ConsoleKey.Q:
+                    SystemState.ShouldQuit = true;
+                    return;
+                default:
+                    Level.Instance.GetPlayer().Move(key.Key);
+                    return;
+            }
         }
 
         static void MyPaint()
@@ -92,83 +106,5 @@ namespace GrowingTree
             }
             Console.WriteLine();
         }
-
-        static void DrawFeatureRooms()
-        {
-            Level.Instance.GenerateRooms();
-            //Level.Instance.Draw();
-            Hallway hall;
-            while ((hall = Hallway.GenerateHallway(Level.Instance)) != null)
-            {
-                Level.Instance.InsertFeature(hall);
-            }
-            //Level.Instance.Draw();
-
-            Console.SetCursorPosition(0, Level.Instance.Height+10);
-        }
-
-        //private static void BeAPlayer()
-        //{
-        //    for (;;)
-        //    {
-        //        Level.Instance.DrawMap();
-        //        player.Draw();
-        //        monster.Draw();
-        //        Console.SetCursorPosition(0, Level.Instance);
-        //        player.Move();
-        //        monster.Move();
-        //        Console.WriteLine("Time to Move... Player");
-        //        Console.WriteLine(player.Message);
-        //    }
-        //}
-
-        //static void DrawMap()
-        //{
-        //    var map = new Level(160, 50);
-        //    map.GenerateRooms();
-        //    map.GenerateHallways();
-        //    map.GenerateDoors();
-        //    map.PruneHallways();
-        //    map.PruneDoors();
-
-        //    map.DrawMap();
-        //}
-
-        //static void DrawRooms()
-        //{
-        //    var rooms = new RoomPlacement(55, 160);
-
-        //    rooms.Draw();
-        //    while (rooms.Step())
-        //    {
-        //        rooms.Draw();
-        //    }
-        //    rooms.Draw();
-
-        //    var open = rooms.FindOpenPoint();
-        //    do
-        //    {
-
-        //        var maze = new GrowingTree(55, 160, rooms.map, open);
-        //        maze.Draw();
-        //        while (maze.Step())
-        //        {
-        //            maze.Draw();
-        //        }
-        //        maze.Draw();
-   
-        //    } while ((open = rooms.FindOpenPoint()) != null);
-        //    rooms.Draw();
-        //}
-        //static void DrawMaze()
-        //{
-        //    var maze = new GrowingTree(55, 170);
-        //    maze.Draw();
-        //    while (maze.Step())
-        //    {
-        //        maze.Draw();
-        //    }
-        //    maze.Draw();
-        //}
     }
 }

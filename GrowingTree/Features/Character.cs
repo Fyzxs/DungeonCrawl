@@ -1,4 +1,6 @@
-﻿namespace GrowingTree.Features
+﻿using System;
+
+namespace GrowingTree.Features
 {
     abstract class Character : Feature
     {
@@ -6,6 +8,6 @@
         {
         }
 
-        public abstract void Move();
+        public abstract void Move(ConsoleKey key = ConsoleKey.NoName);
     }
 }

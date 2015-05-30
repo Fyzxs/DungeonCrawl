@@ -7,37 +7,6 @@ namespace GrowingTree.Features
 {
     internal class Room : Feature
     {
-        private const int MaxRetries = 100;
-        private const int MaxSize = 10;
-        private const int MinSize = 4;
-
-        public static Room GenerateRoom(Level level)
-        {
-            for (var attempts = 0; attempts < MaxRetries; attempts++)
-            {
-                //Get a size
-                var sizeW = Rand.Next(MinSize, MaxSize);
-                var sizeH = Rand.Next(MinSize, Math.Min(sizeW*2, MaxSize));
-
-                //Get a location
-                var x = Rand.Next(0, level.Width - sizeW);
-                var y = Rand.Next(0, (level.Height - sizeH));
-                var room = new Room(new Point() {X = x, Y = y}, sizeW, sizeH);
-                if (!IsValid(room, level.GetRooms()))
-                {
-                    continue;
-                }
-
-                return room;
-            }
-            return null;
-        }
-
-        private static bool IsValid(Room room, IEnumerable<Room> rooms)
-        {
-            return rooms.All(room.NoOverlap);
-        }
-
         public Room(Point source, int width, int height) : base(new Boundary(source, width, height))
         {
             for (var top = 0; top < height; top++)
