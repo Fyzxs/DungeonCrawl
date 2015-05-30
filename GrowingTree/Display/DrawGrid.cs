@@ -83,8 +83,8 @@ namespace GrowingTree.Display
         private readonly Data[,] grid;
         private int gridX;
         private int gridY;
-        public ConsoleColor CurrentForeground = Console.ForegroundColor;
-        public ConsoleColor CurrentBackground = Console.BackgroundColor;
+        public ConsoleColor CurrentForeground = ConsoleColor.Black;
+        public ConsoleColor CurrentBackground = ConsoleColor.Black;
         private DrawGrid(int width, int height)
         {
             Width = width;

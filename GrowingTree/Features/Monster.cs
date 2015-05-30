@@ -14,9 +14,9 @@ namespace GrowingTree.Features
 
         protected override void DrawImpl(DrawGrid drawGrid)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.BackgroundColor = ConsoleColor.DarkRed;
-            Console.Write("M");
+            drawGrid.CurrentForeground = ConsoleColor.Red;
+            drawGrid.CurrentBackground = ConsoleColor.DarkRed;
+            drawGrid.Place('M');
         }
 
         public override void Move(ConsoleKey key = ConsoleKey.NoName)

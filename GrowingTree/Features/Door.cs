@@ -20,8 +20,10 @@ namespace GrowingTree.Features
 
         protected override void DrawImpl(DrawGrid drawGrid)
         {
-            drawGrid.CurrentBackground = ConsoleColor.Green;
-            drawGrid.CurrentForeground = ConsoleColor.Gray;
+            var orgColor = drawGrid.CurrentBackground;
+            var player = Level.Instance.GetPlayer();
+            drawGrid.CurrentBackground = player.HasSeen(this) ? ConsoleColor.DarkGray : orgColor;
+            drawGrid.CurrentBackground = player.CanSee(this) ? ConsoleColor.White : drawGrid.CurrentBackground;
             drawGrid.Place('D');
         }
 

@@ -12,7 +12,10 @@ namespace GrowingTree.Features
         {
             return feature is NullFeature;
         }
-        public NullFeature() : base(new Boundary(new Point{X=0, Y=0}))
+        private NullFeature() : base(new Boundary(new Point{X=0, Y=0}))
+        {
+        }
+        protected override void DrawImpl(DrawGrid drawGrid)
         {
         }
     }

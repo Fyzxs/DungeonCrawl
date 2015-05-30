@@ -9,5 +9,10 @@ namespace GrowingTree.Features
         }
 
         public abstract void Move(ConsoleKey key = ConsoleKey.NoName);
+
+        protected override void FillFeatureGrid(Feature[,] grid, int leftAdj, int topAdj)
+        {
+            //No Op
+        }
     }
 }

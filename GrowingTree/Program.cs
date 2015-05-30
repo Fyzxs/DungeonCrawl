@@ -50,6 +50,9 @@ namespace GrowingTree
             DrawGrid.Draw(level);
             var startRoom = level.GetRooms().First();
             level.InsertFeature(new Player(new Point(startRoom.Left + 1, startRoom.Top + 1)));
+
+            var endRoom = level.GetRooms().Last();
+            level.InsertFeature(new Monster(new Point(endRoom.Left + 1, endRoom.Top + 1)));
             while (!SystemState.ShouldQuit)
             {
                 Thread.Sleep(100);
@@ -75,6 +78,10 @@ namespace GrowingTree
                     return;
                 default:
                     Level.Instance.GetPlayer().Move(key.Key);
+                    foreach (var monster in Level.Instance.GetMonsters())
+                    {
+                        monster.Move();
+                    }
                     return;
             }
         }

@@ -44,13 +44,6 @@ namespace GrowingTree.Features
 
             return otherIsLeftOf || otherIsAbove || otherIsRightOf || otherIsBelow;
         }
-
-        protected override void DrawImpl(DrawGrid drawGrid)
-        {
-            drawGrid.CurrentBackground = ConsoleColor.Gray;
-            drawGrid.CurrentForeground = ConsoleColor.DarkGray;
-            base.DrawImpl(drawGrid);
-        }
     }
 
 }

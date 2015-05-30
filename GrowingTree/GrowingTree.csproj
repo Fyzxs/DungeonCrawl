@@ -51,7 +51,10 @@
     <Compile Include="Features\Hallway.cs" />
     <Compile Include="Features\Level.cs" />
     <Compile Include="Features\Monster.cs" />
-    <Compile Include="Features\NullFeature.cs" />
+    <Compile Include="Features\Null\INullFeature.cs" />
+    <Compile Include="Features\Null\NullCharacter.cs" />
+    <Compile Include="Features\Null\NullFeature.cs" />
+    <Compile Include="Features\Null\NullPlayer.cs" />
     <Compile Include="Features\Player.cs" />
     <Compile Include="LevelCreator.cs" />
     <Compile Include="Point.cs" />

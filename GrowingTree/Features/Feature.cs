@@ -16,7 +16,6 @@ namespace GrowingTree.Features
         internal List<Feature> FeatureList = new List<Feature>();
         //protected readonly Feature[,] FeatureGrid;
         protected Boundary ThisBoundary;
-        public Dictionary<Character, bool> HaveSeen = new Dictionary<Character, bool>();
         internal Feature Parent = null;
         public char AssignedCharacter = '~';
 
@@ -24,7 +23,7 @@ namespace GrowingTree.Features
         {
             get
             {
-                var start = DateTime.Now.Millisecond;
+                var start = DateTime.Now.Ticks;
                 var grid = new Feature[Width, Height];
                 FillFeatureGrid(grid, Left, Top);
                 for (var i = 0; i < grid.GetLength(0); i++)
@@ -38,8 +37,8 @@ namespace GrowingTree.Features
                     }
                 }
 
-                var end = DateTime.Now.Millisecond;
-                Debug.WriteLine("Took [{0}]ms", (end-start));
+                var end = DateTime.Now.Ticks;
+                Debug.WriteLine("Took [{0}]ticks", (end-start));
                 return grid;
             }
         }
@@ -100,13 +99,6 @@ namespace GrowingTree.Features
         protected Feature(Boundary boundary)
         {
             ThisBoundary = boundary;
-            //for (var top = 0; top < Height; top++)
-            //{
-            //    for (var left = 0; left < Width; left++)
-            //    {
-            //        FeatureGrid[left, top] = new NullFeature();
-            //    }
-            //}
         }
 
         public void InsertFeature(Feature feature)
@@ -114,42 +106,11 @@ namespace GrowingTree.Features
             if (feature == this) { throw new ArgumentException("Cannot insert into self");}
             feature.Parent = this;
 
-            //if (!feature.FeatureList.Any())
-            //{
-            //    FeatureGrid[feature.Left, feature.Top] = feature;
-            //}
-            //else
-            //{
-            //    foreach (var f in feature.FeatureList)
-            //    {
-            //        FeatureGrid[feature.Left + f.Left, feature.Top + f.Top] = feature;
-            //    }
-            //}
             FeatureList.Add(feature);
         }
         public void RemoveFeature(Feature feature)
         {
-            if (!FeatureList.Remove(feature)) return;
-            
-            //if (!feature.FeatureList.Any())
-            //{
-            //    FeatureGrid[feature.Left, feature.Top] = NullFeature.Instance;
-            //    if (Parent != null)
-            //    {
-            //        Parent.FeatureGrid[feature.Left + Parent.Left, feature.Top + Parent.Top] = NullFeature.Instance;
-            //    }
-            //}
-            //else
-            //{
-            //    foreach (var f in feature.FeatureList)
-            //    {
-            //        FeatureGrid[feature.Left + f.Left, feature.Top + f.Top] = NullFeature.Instance;
-            //        if (Parent != null)
-            //        {
-            //            Parent.FeatureGrid[feature.Left + Parent.Left, feature.Top + Parent.Top] = NullFeature.Instance;
-            //        }
-            //    }
-            //}
+            FeatureList.Remove(feature);
         }
 
         protected List<T> GetFeaturesOfType<T>() where T : Feature

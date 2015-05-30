@@ -1,15 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GrowingTree.Display;
 
 namespace GrowingTree.Features
 {
-    class Player : Character
+    internal class Player : Character
     {
+        private const int VisionDistance = 3;
+
         public string Message = "";
+        private readonly List<Feature> visibleFeatures = new List<Feature>(VisionDistance*VisionDistance*2);
+        private readonly List<Feature> hasSeenFeatures = new List<Feature>();
 
         public Player(Point startingLocation) : base(startingLocation)
         {
 
+        }
+
+        public bool CanSee(Feature feature)
+        {
+            return visibleFeatures.Contains(feature);
+        }
+
+        public bool HasSeen(Feature feature)
+        {
+            return hasSeenFeatures.Contains(feature);
         }
 
         protected override void DrawImpl(DrawGrid drawGrid)
@@ -54,6 +70,76 @@ namespace GrowingTree.Features
 
             ThisBoundary.Coords.X += xMod;
             ThisBoundary.Coords.Y += yMod;
+
+            FlagActive(map);
+        }
+
+        private void FlagActive(Feature[,] map)
+        {
+            visibleFeatures.Clear();
+            for (var x = 0; x <= VisionDistance; x++)
+            {
+                var cellFeature = Level.Instance.FeatureGrid[Left + x, Top];
+                if (NullFeature.IsNullFeature(cellFeature))
+                {
+                    break;
+                }
+
+
+                FlagActiveSubFeatures(cellFeature, map);
+            }
+        }
+
+        private void FlagActiveSubFeatures(Feature cellFeature, Feature[,] map)
+        {
+            if (cellFeature.FeatureList.Count > 0)
+            {
+                for (var xStart = 0; xStart <= VisionDistance; xStart++)
+                {
+                    if (NullFeature.IsNullFeature(map[Left + xStart, Top]))
+                    {
+                        break;
+                    }
+                    for (int x = xStart, y = 0; x <= VisionDistance; x++, y--)
+                    {
+                        if (NullFeature.IsNullFeature(map[Left + x, Top]))
+                        {
+                            break;
+                        }
+                        var breakFurther = false;
+                        foreach (var feature in cellFeature.FeatureList)
+                        {
+                            if (Top+y < 0 || NullFeature.IsNullFeature(map[Left + x, Top + y]))
+                            {
+                                breakFurther = true;
+                                break;
+                            }
+                            if (feature.Left == Left - cellFeature.Left + x && feature.Top == Top - cellFeature.Top + y)
+                            {
+                                if (NullFeature.IsNullFeature(feature))
+                                {
+                                    breakFurther = true;
+                                    break;
+                                }
+                                visibleFeatures.Add(feature);
+                                hasSeenFeatures.Add(feature);
+                            }
+                        }
+                        if (breakFurther)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // [ ][ ][ ][ ][ ][ ][ ][ ]
+            // [ ][ ][ ][ ][ ][ ][ ][ ]
+            // [ ][ ][ ][ ][ ][ ][ ][ ]
+            // [ ][ ][ ][x][+1, 0][ ][ ][ ]
+            // [ ][ ][ ][ ][ ][ ][ ][ ]
+            // [ ][ ][ ][ ][ ][ ][ ][ ]
+            // [ ][ ][ ][ ][ ][ ][ ][ ]
         }
     }
 }

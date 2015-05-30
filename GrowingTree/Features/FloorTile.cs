@@ -22,7 +22,12 @@ namespace GrowingTree.Features
 
         protected override void DrawImpl(DrawGrid drawGrid)
         {
+            var orgColor = drawGrid.CurrentBackground;
+            var player = Level.Instance.GetPlayer();
+            drawGrid.CurrentBackground = player.HasSeen(this) ? ConsoleColor.DarkGray : orgColor;
+            drawGrid.CurrentBackground = player.CanSee(this) ? ConsoleColor.White : drawGrid.CurrentBackground;
             drawGrid.Place(AssignedCharacter == '~' ? '#' : AssignedCharacter);
+            drawGrid.CurrentBackground = orgColor;
         }
     }
 }

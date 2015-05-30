@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GrowingTree.Display;
+using GrowingTree.Features.Null;
 
 namespace GrowingTree.Features
 {
@@ -31,8 +32,15 @@ namespace GrowingTree.Features
 
         internal Player GetPlayer()
         {
-            return GetFeaturesOfType<Player>().First();
-        } 
+            var players = GetFeaturesOfType<Player>();
+            return players.Count > 0 ? players.First() : NullPlayer.Instance;
+        }
+
+        internal IEnumerable<Monster> GetMonsters()
+        {
+            return GetFeaturesOfType<Monster>();
+        }
+
 
     }
 }
