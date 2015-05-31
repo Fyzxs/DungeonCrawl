@@ -23,8 +23,14 @@ namespace GrowingTree.Features
             var orgColor = drawGrid.CurrentBackground;
             var player = Level.Instance.GetPlayer();
             drawGrid.CurrentBackground = player.HasSeen(this) ? ConsoleColor.DarkGray : orgColor;
-            drawGrid.CurrentBackground = player.CanSee(this) ? ConsoleColor.White : drawGrid.CurrentBackground;
+            drawGrid.CurrentBackground = player.CanSee(this) ? ConsoleColor.White : drawGrid.CurrentBackground; 
+            if (Program.SystemState.DebugFlags.DrawAll)
+            {
+                drawGrid.CurrentBackground = ConsoleColor.DarkYellow;
+                drawGrid.CurrentBackground = ConsoleColor.DarkGray;
+            }
             drawGrid.Place('D');
+            drawGrid.CurrentBackground = orgColor;
         }
 
     }

@@ -19,37 +19,9 @@ namespace GrowingTree.Features
         internal Feature Parent = null;
         public char AssignedCharacter = '~';
 
-        public Feature[,] FeatureGrid
-        {
-            get
-            {
-                var start = DateTime.Now.Ticks;
-                var grid = new Feature[Width, Height];
-                FillFeatureGrid(grid, Left, Top);
-                for (var i = 0; i < grid.GetLength(0); i++)
-                {
-                    for (var j = 0; j < grid.GetLength(1); j++)
-                    {
-                        if (grid[i, j] == null)
-                        {
-                            grid[i, j] = NullFeature.Instance;
-                        }
-                    }
-                }
-
-                var end = DateTime.Now.Ticks;
-                Debug.WriteLine("Took [{0}]ticks", (end-start));
-                return grid;
-            }
-        }
-
         protected virtual void FillFeatureGrid(Feature[,] grid, int leftAdj, int topAdj)
         {
-            if (FeatureList.Count == 0)
-            {
-                grid[leftAdj + Left, topAdj + Top] = this;
-                return;
-            }
+            grid[leftAdj + Left, topAdj + Top] = this;
             foreach (var feature in FeatureList)
             {
                 feature.FillFeatureGrid(grid, leftAdj + Left, topAdj + Top);

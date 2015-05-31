@@ -76,70 +76,21 @@ namespace GrowingTree.Features
 
         private void FlagActive(Feature[,] map)
         {
+            var blocked = new bool[VisionDistance*2+1];
             visibleFeatures.Clear();
-            for (var x = 0; x <= VisionDistance; x++)
+            for (var pos = 0; pos < VisionDistance; pos++)
             {
-                var cellFeature = Level.Instance.FeatureGrid[Left + x, Top];
-                if (NullFeature.IsNullFeature(cellFeature))
+                for (var posSec = pos; posSec < VisionDistance; posSec++)
                 {
-                    break;
-                }
-
-
-                FlagActiveSubFeatures(cellFeature, map);
-            }
-        }
-
-        private void FlagActiveSubFeatures(Feature cellFeature, Feature[,] map)
-        {
-            if (cellFeature.FeatureList.Count > 0)
-            {
-                for (var xStart = 0; xStart <= VisionDistance; xStart++)
-                {
-                    if (NullFeature.IsNullFeature(map[Left + xStart, Top]))
+                    var noAdjustment = map[Left+pos, Top+posSec];
+                    if (!NullFeature.IsNullFeature(noAdjustment))
                     {
-                        break;
-                    }
-                    for (int x = xStart, y = 0; x <= VisionDistance; x++, y--)
-                    {
-                        if (NullFeature.IsNullFeature(map[Left + x, Top]))
-                        {
-                            break;
-                        }
-                        var breakFurther = false;
-                        foreach (var feature in cellFeature.FeatureList)
-                        {
-                            if (Top+y < 0 || NullFeature.IsNullFeature(map[Left + x, Top + y]))
-                            {
-                                breakFurther = true;
-                                break;
-                            }
-                            if (feature.Left == Left - cellFeature.Left + x && feature.Top == Top - cellFeature.Top + y)
-                            {
-                                if (NullFeature.IsNullFeature(feature))
-                                {
-                                    breakFurther = true;
-                                    break;
-                                }
-                                visibleFeatures.Add(feature);
-                                hasSeenFeatures.Add(feature);
-                            }
-                        }
-                        if (breakFurther)
-                        {
-                            break;
-                        }
+                        visibleFeatures.Add(noAdjustment);
+                        hasSeenFeatures.Add(noAdjustment);
                     }
                 }
             }
-
-            // [ ][ ][ ][ ][ ][ ][ ][ ]
-            // [ ][ ][ ][ ][ ][ ][ ][ ]
-            // [ ][ ][ ][ ][ ][ ][ ][ ]
-            // [ ][ ][ ][x][+1, 0][ ][ ][ ]
-            // [ ][ ][ ][ ][ ][ ][ ][ ]
-            // [ ][ ][ ][ ][ ][ ][ ][ ]
-            // [ ][ ][ ][ ][ ][ ][ ][ ]
         }
+
     }
 }

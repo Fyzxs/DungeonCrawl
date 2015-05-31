@@ -94,7 +94,10 @@ namespace GrowingTree.Display
 
         public static void DebugDraw(Feature feature)
         {
-            Draw(feature);
+            if (Program.SystemState.DebugFlags.Draw)
+            {
+                Draw(feature);
+            }
         }
         public static void Draw(Feature feature)
         {
