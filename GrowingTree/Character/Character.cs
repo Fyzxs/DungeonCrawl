@@ -1,6 +1,7 @@
 ﻿using System;
+using GrowingTree.Features;
 
-namespace GrowingTree.Features
+namespace GrowingTree.Character
 {
     abstract class Character : Feature
     {

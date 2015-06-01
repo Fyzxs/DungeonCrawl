@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GrowingTree.Character;
 using GrowingTree.Display;
 
 namespace GrowingTree.Features.Null

@@ -7,11 +7,11 @@ using GrowingTree.Display;
 
 namespace GrowingTree.Features.Null
 {
-    class NullCharacter : Character
+    class NullCharacter : Character.Character
     {
         public static readonly NullCharacter Instance = new NullCharacter();
 
-        public static bool IsNullCharacter(Character feature)
+        public static bool IsNullCharacter(Character.Character feature)
         {
             return feature is NullCharacter;
         }

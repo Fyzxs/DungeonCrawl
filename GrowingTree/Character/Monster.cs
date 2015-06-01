@@ -1,7 +1,8 @@
 ﻿using System;
 using GrowingTree.Display;
+using GrowingTree.Features;
 
-namespace GrowingTree.Features
+namespace GrowingTree.Character
 {
     class Monster : Character
     {
