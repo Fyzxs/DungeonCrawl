@@ -38,7 +38,7 @@ namespace GrowingTree
         {
             const int maxRetries = 100;
             const int maxSize = 10;
-            const int minSize = 4;
+            const int minSize = 10;
 
             for (var attempts = 0; attempts < maxRetries; attempts++)
             {
@@ -69,12 +69,12 @@ namespace GrowingTree
         private static void GenerateHallways(Level level)
         {
             Hallway hall;
-            DrawGrid.Draw(level);
+            DrawGrid.DebugDraw(level);
             var featureGrid = level.FeatureGrid;
             while ((hall = GenerateHallway(featureGrid)) != null)
             {
                 level.InsertFeature(hall);
-                DrawGrid.Draw(level);
+                DrawGrid.DebugDraw(level);
             }
         }
         private static Hallway GenerateHallway(Feature[,] featureGrid)
@@ -299,7 +299,12 @@ namespace GrowingTree
                     var bottomPoint = new Point(x, bottom + 1);
                     if (top >= 2 && !NullFeature.IsNullFeature(map[x, top - 2]))
                     {
-                        var door = new Door(topPoint) { Connection = new Tuple<Room, Feature>(room, map[x, top - 2]) };
+                        var tile = map[x, top - 2];
+                        while (tile is FloorTile)
+                        {
+                            tile = tile.Parent;
+                        }
+                        var door = new Door(topPoint) { Connection = new Tuple<Room, Feature>(room, tile) };
                         if (!availableDoors.Any(d => door.Connection.Item1 == d.Connection.Item1 && door.Connection.Item2 == d.Connection.Item2))
                         {
                             availableDoors.Add(door);
@@ -308,7 +313,12 @@ namespace GrowingTree
 
                     if (bottom + 2 < level.Height && !NullFeature.IsNullFeature(map[x, bottom + 2]))
                     {
-                        var door = new Door(bottomPoint) { Connection = new Tuple<Room, Feature>(room, map[x, bottom + 2]) };
+                        var tile = map[x, bottom + 2];
+                        while (tile is FloorTile)
+                        {
+                            tile = tile.Parent;
+                        }
+                        var door = new Door(bottomPoint) { Connection = new Tuple<Room, Feature>(room, tile) };
                         if (!availableDoors.Any(d => door.Connection.Item1 == d.Connection.Item1 && door.Connection.Item2 == d.Connection.Item2))
                         {
                             availableDoors.Add(door);
@@ -330,7 +340,12 @@ namespace GrowingTree
                      */
                     if (left >= 2 && !NullFeature.IsNullFeature(map[left - 2, y]))
                     {
-                        var door = new Door(leftPoint) { Connection = new Tuple<Room, Feature>(room, map[left - 2, y]) };
+                        var tile = map[left - 2, y];
+                        while (tile is FloorTile)
+                        {
+                            tile = tile.Parent;
+                        }
+                        var door = new Door(leftPoint) { Connection = new Tuple<Room, Feature>(room, tile) };
                         if (!availableDoors.Any(d => door.Connection.Item1 == d.Connection.Item1 && door.Connection.Item2 == d.Connection.Item2))
                         {
                             availableDoors.Add(door);
@@ -339,7 +354,12 @@ namespace GrowingTree
 
                     if (right + 2 < level.Width && !NullFeature.IsNullFeature(map[right + 2, y]))
                     {
-                        var door = new Door(rightPoint) { Connection = new Tuple<Room, Feature>(room, map[right + 2, y]) };
+                        var tile = map[right + 2, y];
+                        while (tile is FloorTile)
+                        {
+                            tile = tile.Parent;
+                        }
+                        var door = new Door(rightPoint) { Connection = new Tuple<Room, Feature>(room, tile) };
                         if (!availableDoors.Any(d => door.Connection.Item1 == d.Connection.Item1 && door.Connection.Item2 == d.Connection.Item2))
                         {
                             availableDoors.Add(door);

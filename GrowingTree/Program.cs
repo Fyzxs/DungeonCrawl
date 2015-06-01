@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GrowingTree.Character;
 using GrowingTree.Display;
 using GrowingTree.Features;
 using Microsoft.Win32.SafeHandles;
@@ -18,6 +19,16 @@ namespace GrowingTree
         internal static class SystemState
         {
             public static bool ShouldQuit = false;
+
+            public static class DebugFlags
+            {
+                //Shows the entire map; not just visible sections
+                public static bool DrawAll = true;
+                //Allows regeneration of maps without quitting
+                public static bool Regen = true;
+                //If the debug drawing should happen
+                public static bool Draw = false;
+            }
         }
         /// <summary>
         /// Event handler for ^C key press
@@ -37,7 +48,13 @@ namespace GrowingTree
             Console.ReadLine();
             Console.Clear();
 
-            MainLoop();
+            do
+            {
+                SystemState.DebugFlags.Regen = false;
+                SystemState.ShouldQuit = false;
+                MainLoop();
+            } while (SystemState.DebugFlags.Regen);
+
             Console.SetCursorPosition(0, 80-10);
             Console.WriteLine();
             Console.WriteLine("Done");
@@ -65,14 +82,17 @@ namespace GrowingTree
         {
             if (!Console.KeyAvailable) return;
 
-            var key = Console.ReadKey();
+            var key = Console.ReadKey(true);
             //Clear the buffer
             while (Console.KeyAvailable)
             {
-                Console.ReadKey(false);
+                Console.ReadKey(true);
             }
             switch (key.Key)
             {
+                case ConsoleKey.R:
+                    SystemState.DebugFlags.Regen = true;
+                    goto case ConsoleKey.Q;//goto is being accepted as a forced 'fall through'
                 case ConsoleKey.Q:
                     SystemState.ShouldQuit = true;
                     return;
