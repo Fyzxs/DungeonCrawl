@@ -18,6 +18,17 @@ namespace GrowingTree.Features
         {
         }
 
+        public override bool IsPassable()
+        {
+            return true;
+        }
+
+        public override bool IsVisionBlocking()
+        {
+            return false;
+        }
+
+
         protected override void DrawImpl(DrawGrid drawGrid)
         {
             var orgColor = drawGrid.CurrentBackground;
@@ -26,8 +37,7 @@ namespace GrowingTree.Features
             drawGrid.CurrentBackground = player.CanSee(this) ? ConsoleColor.White : drawGrid.CurrentBackground; 
             if (Program.SystemState.DebugFlags.DrawAll)
             {
-                drawGrid.CurrentBackground = ConsoleColor.DarkYellow;
-                drawGrid.CurrentBackground = ConsoleColor.DarkGray;
+                drawGrid.CurrentBackground = player.CanSee(this) ? ConsoleColor.White : ConsoleColor.DarkYellow;
             }
             drawGrid.Place('D');
             drawGrid.CurrentBackground = orgColor;

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Character\Vision.cs" />
     <Compile Include="Display\DrawGrid.cs" />
     <Compile Include="Character\Character.cs" />
     <Compile Include="Display\IDraw.cs" />

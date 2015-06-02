@@ -6,7 +6,6 @@ namespace GrowingTree.Character
 {
     class Monster : Character
     {
-        public string Message = "";
         private ConsoleKey previousDirection = ConsoleKey.DownArrow;
 
         public Monster(Point startingLocation) : base(startingLocation)
@@ -15,14 +14,29 @@ namespace GrowingTree.Character
 
         protected override void DrawImpl(DrawGrid drawGrid)
         {
-            drawGrid.CurrentForeground = ConsoleColor.Red;
+            var grid = Level.Instance.FeatureGrid;
+            var player = Level.Instance.GetPlayer();
+            var canSeePlayer = CharacterVision.CanSee(grid[player.Left, player.Top]);
+            if (!player.CanSee(grid[Left, Top]) && !Program.SystemState.DebugFlags.DrawAll)
+            {
+                //drawGrid.CurrentForeground = ConsoleColor.Green;
+                //drawGrid.CurrentBackground = ConsoleColor.DarkRed;
+                //drawGrid.Place('M');
+                return;
+            }
+            
+            drawGrid.CurrentForeground = canSeePlayer ? ConsoleColor.Red : ConsoleColor.Yellow;
             drawGrid.CurrentBackground = ConsoleColor.DarkRed;
             drawGrid.Place('M');
         }
 
+        public override int VisionDistance
+        {
+            get { return 2; }
+        }
+
         public override void Move(ConsoleKey key = ConsoleKey.NoName)
         {
-            Message = "";
             var x = new []{ConsoleKey.DownArrow, ConsoleKey.UpArrow, ConsoleKey.LeftArrow, ConsoleKey.RightArrow};
             var moved = false;
             
@@ -54,22 +68,14 @@ namespace GrowingTree.Character
                     dir = x[Rand.Next(4)];
                 }
             }
+            CharacterVision.FlagActive(Level.Instance.FeatureGrid);
         }
-
-
 
         private bool Move(int xMod, int yMod)
         {
             var map = Level.Instance.FeatureGrid;
 
-            if (ThisBoundary.Coords.X + xMod < 0 ||
-                ThisBoundary.Coords.Y + yMod < 0 ||
-                ThisBoundary.Coords.X + xMod >= Level.Instance.Width ||
-                ThisBoundary.Coords.Y + yMod >= Level.Instance.Height ||
-                NullFeature.IsNullFeature(map[ThisBoundary.Coords.X + xMod, ThisBoundary.Coords.Y + yMod]))
-            {
-                return false;
-            }
+            if (!CanMove(xMod, yMod, map)) return false;
 
             ThisBoundary.Coords.X += xMod;
             ThisBoundary.Coords.Y += yMod;

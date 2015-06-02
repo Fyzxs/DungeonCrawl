@@ -23,7 +23,7 @@ namespace GrowingTree
             public static class DebugFlags
             {
                 //Shows the entire map; not just visible sections
-                public static bool DrawAll = true;
+                public static bool DrawAll = false;
                 //Allows regeneration of maps without quitting
                 public static bool Regen = true;
                 //If the debug drawing should happen
@@ -73,6 +73,7 @@ namespace GrowingTree
             while (!SystemState.ShouldQuit)
             {
                 Thread.Sleep(100);
+                Level.Instance.RefreshFeatureGrid();
                 ProcessInput();
                 DrawGrid.Draw(level);
             }
@@ -95,6 +96,11 @@ namespace GrowingTree
                     goto case ConsoleKey.Q;//goto is being accepted as a forced 'fall through'
                 case ConsoleKey.Q:
                     SystemState.ShouldQuit = true;
+                    return;
+                case ConsoleKey.D:
+                    SystemState.DebugFlags.DrawAll = !SystemState.DebugFlags.DrawAll;
+                    SystemState.DebugFlags.Draw = !SystemState.DebugFlags.Draw;
+
                     return;
                 default:
                     Level.Instance.GetPlayer().Move(key.Key);

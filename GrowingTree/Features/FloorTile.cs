@@ -9,7 +9,17 @@ namespace GrowingTree.Features
         public FloorTile(Point point) : base(point)
         {
         }
-        
+
+        public override bool IsPassable()
+        {
+            return true;
+        }
+
+        public override bool IsVisionBlocking()
+        {
+            return false;
+        }
+
         protected override void DrawImpl(DrawGrid drawGrid)
         {
             var orgColor = drawGrid.CurrentBackground;

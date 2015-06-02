@@ -20,6 +20,11 @@ namespace GrowingTree.Features.Null
         {
         }
 
+        public override int VisionDistance
+        {
+            get { return Instance.VisionDistance; }
+        }
+
         public override void Move(ConsoleKey key = ConsoleKey.NoName)
         {
         }

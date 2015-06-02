@@ -7,25 +7,30 @@ namespace GrowingTree.Character
 {
     internal class Player : Character
     {
-        private const int VisionDistance = 5;
+        private const int DefaultVisionDistance = 3;
 
-        public string Message = "";
-        private readonly List<Feature> visibleFeatures = new List<Feature>(VisionDistance*VisionDistance*2);
-        private readonly List<Feature> hasSeenFeatures = new List<Feature>();
+        public override int VisionDistance
+        {
+            get { return DefaultVisionDistance; }
+        }
 
         public Player(Point startingLocation) : base(startingLocation)
         {
-
+            Move(0, 0);//Triggers initial visible zone
         }
 
+        public bool CanSee(Character character)
+        {
+            return CharacterVision.CanSee(character);
+        }
         public bool CanSee(Feature feature)
         {
-            return visibleFeatures.Contains(feature);
+            return CharacterVision.CanSee(feature);
         }
 
         public bool HasSeen(Feature feature)
         {
-            return hasSeenFeatures.Contains(feature);
+            return CharacterVision.HasSeen(feature);
         }
 
         protected override void DrawImpl(DrawGrid drawGrid)
@@ -37,7 +42,6 @@ namespace GrowingTree.Character
 
         public override void Move(ConsoleKey key = ConsoleKey.NoName)
         {
-            Message = "";
             switch (key)
             {
                 case ConsoleKey.DownArrow:
@@ -52,6 +56,9 @@ namespace GrowingTree.Character
                 case ConsoleKey.RightArrow:
                     Move(+1, 0);
                     break;
+                default:
+                    Move(0, 0);
+                    break;
             }
         }
 
@@ -59,184 +66,223 @@ namespace GrowingTree.Character
         {
             var map = Level.Instance.FeatureGrid;
 
-            if (ThisBoundary.Coords.X + xMod < 0 ||
-                ThisBoundary.Coords.Y + yMod < 0 ||
-                ThisBoundary.Coords.X + xMod >= Level.Instance.Width ||
-                ThisBoundary.Coords.Y + yMod >= Level.Instance.Height ||
-                NullFeature.IsNullFeature(map[ThisBoundary.Coords.X + xMod, ThisBoundary.Coords.Y + yMod]))
-            {
-                return;
-            }
+            if (!CanMove(xMod, yMod, map)) return;
 
             ThisBoundary.Coords.X += xMod;
             ThisBoundary.Coords.Y += yMod;
 
-            FlagActive(map);
+            CharacterVision.FlagActive(map);
         }
 
-        private void FlagActive(Feature[,] map)
-        {
-            var blocked = new bool[VisionDistance*2+1];
-            visibleFeatures.Clear();
-            for (var pos = 0; pos < VisionDistance; pos++)
-            {
-                for (var posSec = pos; posSec < VisionDistance; posSec++)
-                {
-                    ////No D-R diag
-                    ////Down Line
-                    //var downRightX = Left + pos;
-                    //var downRightY = Top + posSec + 1;
-                    //var downRight = map[downRightX, downRightY];
-                    //if (!NullFeature.IsNullFeature(downRight))
-                    //{
-                    //    visibleFeatures.Add(downRight);
-                    //    hasSeenFeatures.Add(downRight);
-                    //}
+        // /*
+        // * Returns if the tile was valid
+        // */
+        //private bool ProcessTile(Feature[,] map, int x, int y, int width, int height)
+        //{
+        //    Feature tile;
+        //    if (x < 0 || x >= width ||
+        //        y < 0 || y >= height ||
+        //        NullFeature.IsNullFeature(tile = map[x, y]))
+        //    {
+        //        return false;
+        //    }
 
-                    ////Has D-R diag
-                    ////Right Line
-                    //var rightDownX = Left + posSec;
-                    //var rightDownY = Top + pos;
-                    //var rightDown = map[rightDownX, rightDownY];
-                    //if (!NullFeature.IsNullFeature(rightDown))
-                    //{
-                    //    visibleFeatures.Add(rightDown);
-                    //    hasSeenFeatures.Add(rightDown);
-                    //}
+        //    visibleFeatures.Add(tile);
+        //    hasSeenFeatures.Add(tile);
+        //    return true;
+        //}
 
-                    ////No T-L diag
-                    ////Has Left Line
-                    //var upLeftX = Left - pos;
-                    //var upLeftY = Top - posSec - 1;
-                    //var upLeft = map[upLeftX, upLeftY];
-                    //if (!NullFeature.IsNullFeature(upLeft))
-                    //{
-                    //    visibleFeatures.Add(upLeft);
-                    //    hasSeenFeatures.Add(upLeft);
-                    //}
+        //private void FlagActive(Feature[,] map)
+        //{
+        //    var width = map.GetLength(0);
+        //    var height = map.GetLength(1);
+        //    const int rightLineBlockedIndex = 0;
+        //    const int leftLineBlockedIndex = 1;
+        //    const int downLineBlockedIndex = 2;
+        //    const int upLineBlockedIndex = 3;
+        //    const int upLeftLineBlockedIndex = 4;
+        //    const int downLeftLineBlockedIndex = 5;
+        //    const int downRightLineBlockedIndex = 6;
+        //    const int upRightLineBlockedIndex = 7;
+        //    // The ordering of this doesn't really matter - Just needs to be 
+        //    // vision distance separated - Except the first one; that's just up 1
+        //    const int rightUpBlockedIndexStart = 8;
+        //    const int downRightBlockedIndexStart = rightUpBlockedIndexStart + VisionDistance;
+        //    const int upRightBlockedIndexStart = downRightBlockedIndexStart + VisionDistance;
+        //    const int rightDownBlockedIndexStart = upRightBlockedIndexStart + VisionDistance;
+        //    const int upLeftBlockedIndexStart = rightDownBlockedIndexStart + VisionDistance;
+        //    const int leftUpBlockedIndexStart = upLeftBlockedIndexStart + VisionDistance;
+        //    const int downLeftBlockedIndexStart = leftUpBlockedIndexStart + VisionDistance;
+        //    const int leftDownBlockedIndexStart = downLeftBlockedIndexStart + VisionDistance;
 
-                    ////Has T-L Diag
-                    ////Has Left Line
-                    //var leftUpX = Left - posSec;
-                    //var leftUpY = Top - pos;
-                    //var leftUp = map[leftUpX, leftUpY];
-                    //if (!NullFeature.IsNullFeature(leftUp))
-                    //{
-                    //    visibleFeatures.Add(leftUp);
-                    //    hasSeenFeatures.Add(leftUp);
-                    //}
+        //    /*
+        //     * EXPLANATION TIME
+        //     * It's reduced from 8 * (VisionDistance - 1) * 8
+        //     * The first 8 is the 8 cardinal directions
+        //     * Each quadrant has an up and down direction; and there will be 
+        //     * N-1 of them.
+        //     * Since there's 2 in each quadrant; 2*4 = 8... the end 8.
+        //     */
+        //    var blocked = new bool[8 * (1 + VisionDistance)];
 
-                    ////Gotta get the diags we don't get below
-                    //var ulDiagPos = pos+1;
-                    //var ulDiag = map[Left + ulDiagPos, Top - ulDiagPos];
-                    //if (!NullFeature.IsNullFeature(ulDiag))
-                    //{
-                    //    visibleFeatures.Add(ulDiag);
-                    //    hasSeenFeatures.Add(ulDiag);
-                    //}
+        //    //We need to recalc the visible things
+        //    visibleFeatures.Clear();
+        //    for (var pos = 1; pos < VisionDistance; pos++)
+        //    {
+        //        //The posSec for loop only runs when pos is greater than 2
+        //        // so if it's < 2; continue main loop
+        //        if (pos >= 2)
+        //        {
+        //            for (var posSec = pos; posSec < VisionDistance; posSec++)
+        //            {
+        //                if (!blocked[rightUpBlockedIndexStart + pos - 1] &&
+        //                    !blocked[rightLineBlockedIndex] &&
+        //                    !blocked[upRightLineBlockedIndex])
+        //                {
+        //                    var rightUpX = Left + posSec;
+        //                    var rightUpY = Top - pos + 1;
+        //                    blocked[rightUpBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, rightUpX, rightUpY, width, height);
+        //                }
 
-                    //var dlDiagPos = pos+1;
-                    //var dlDiag = map[Left - dlDiagPos, Top + dlDiagPos];
-                    //if (!NullFeature.IsNullFeature(dlDiag))
-                    //{
-                    //    visibleFeatures.Add(dlDiag);
-                    //    hasSeenFeatures.Add(dlDiag);
-                    //}
+        //                if (!blocked[upRightBlockedIndexStart + pos - 1] &&
+        //                    !blocked[upLineBlockedIndex] &&
+        //                    !blocked[upRightLineBlockedIndex])
+        //                {
+        //                    var upRightX = Left + pos - 1;
+        //                    var upRightY = Top - posSec;
+        //                    blocked[upRightBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, upRightX, upRightY, width, height);
+        //                }
 
-                    // The previous sections cover the 
-                    // horizontal, vertica, and diagnal lines
-                    // 
-                    // These needs to fill in the lower left 
-                    // and upper right
-                    if (pos >= 2)
-                    {
-                        var downRightX = Left + pos - 1;
-                        var downRightY = Top + posSec;
-                        var downRight = map[downRightX, downRightY];
-                        if (!NullFeature.IsNullFeature(downRight))
-                        {
-                            visibleFeatures.Add(downRight);
-                            hasSeenFeatures.Add(downRight);
-                        }
+        //                if (!blocked[downRightBlockedIndexStart + pos - 1] &&
+        //                    !blocked[downRightLineBlockedIndex] &&
+        //                    !blocked[downLineBlockedIndex])
+        //                {
+        //                    var downRightX = Left + pos - 1;
+        //                    var downRightY = Top + posSec;
+        //                    blocked[downRightBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, downRightX, downRightY, width, height);
+        //                }
 
-                        var rightDownX = Left + posSec;
-                        var rightDownY = Top + pos - 1;
-                        var rightDown = map[rightDownX, rightDownY];
-                        if (!NullFeature.IsNullFeature(rightDown))
-                        {
-                            visibleFeatures.Add(rightDown);
-                            hasSeenFeatures.Add(rightDown);
-                        }
+        //                if (!blocked[rightDownBlockedIndexStart + pos - 1] &&
+        //                    !blocked[downRightLineBlockedIndex] &&
+        //                    !blocked[rightLineBlockedIndex])
+        //                {
+        //                    var rightDownX = Left + posSec;
+        //                    var rightDownY = Top + pos - 1;
+        //                    blocked[rightDownBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, rightDownX, rightDownY, width, height);
+        //                }
 
-                        var upLeftX = Left - pos + 1;
-                        var upLeftY = Top - posSec;
-                        var upLeft = map[upLeftX, upLeftY];
-                        if (!NullFeature.IsNullFeature(upLeft))
-                        {
-                            visibleFeatures.Add(upLeft);
-                            hasSeenFeatures.Add(upLeft);
-                        }
+        //                if (!blocked[upLeftBlockedIndexStart + pos - 1] &&
+        //                    !blocked[upLeftLineBlockedIndex] &&
+        //                    !blocked[upLineBlockedIndex])
+        //                {
+        //                    var upLeftX = Left - pos + 1;
+        //                    var upLeftY = Top - posSec;
+        //                    blocked[upLeftBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, upLeftX, upLeftY, width, height);
+        //                }
 
-                        var leftUpX = Left - posSec;
-                        var leftUpY = Top - pos + 1;
-                        var leftUp = map[leftUpX, leftUpY];
-                        if (!NullFeature.IsNullFeature(leftUp))
-                        {
-                            visibleFeatures.Add(leftUp);
-                            hasSeenFeatures.Add(leftUp);
-                        }
+        //                if (!blocked[leftUpBlockedIndexStart + pos - 1] &&
+        //                    !blocked[upLeftLineBlockedIndex] &&
+        //                    !blocked[leftLineBlockedIndex])
+        //                {
+        //                    var leftUpX = Left - posSec;
+        //                    var leftUpY = Top - pos + 1;
+        //                    blocked[leftUpBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, leftUpX, leftUpY, width, height);
+        //                }
+
+        //                if (!blocked[downLeftBlockedIndexStart + pos - 1] &&
+        //                    !blocked[downLeftLineBlockedIndex] &&
+        //                    !blocked[downLineBlockedIndex])
+        //                {
+        //                    var downLeftX = Left - pos + 1;
+        //                    var downLeftY = Top + posSec;
+        //                    blocked[downLeftBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, downLeftX, downLeftY, width, height);
+        //                }
 
 
-                        var upRightX = Left + pos - 1;
-                        var upRightY = Top - posSec;
-                        var upRight = map[upRightX, upRightY];
-                        if (!NullFeature.IsNullFeature(upRight))
-                        {
-                            visibleFeatures.Add(upRight);
-                            hasSeenFeatures.Add(upRight);
-                        }
+        //                if (!blocked[leftDownBlockedIndexStart + pos - 1] &&
+        //                    !blocked[downLeftLineBlockedIndex] &&
+        //                    !blocked[leftLineBlockedIndex])
+        //                {
+        //                    var leftDownX = Left - posSec;
+        //                    var leftDownY = Top + pos - 1;
+        //                    blocked[leftDownBlockedIndexStart + pos - 1] =
+        //                        !ProcessTile(map, leftDownX, leftDownY, width, height);
+        //                }
+        //            }
+        //        }
 
-                        var rightUpX = Left + posSec;
-                        var rightUpY = Top - pos + 1;
-                        var rightUp = map[rightUpX, rightUpY];
-                        if (!NullFeature.IsNullFeature(rightUp))
-                        {
-                            visibleFeatures.Add(rightUp);
-                            hasSeenFeatures.Add(rightUp);
-                        }
+        //        #region Straight Lines
 
-                        var downLeftX = Left - pos + 1;
-                        var downLeftY = Top + posSec;
-                        var downLeft = map[downLeftX, downLeftY];
-                        if (!NullFeature.IsNullFeature(downLeft))
-                        {
-                            visibleFeatures.Add(downLeft);
-                            hasSeenFeatures.Add(downLeft);
-                        }
+        //        if (!blocked[rightLineBlockedIndex])
+        //        {
+        //            var rX = Left + pos;
+        //            var rY = Top;
+        //            blocked[rightLineBlockedIndex] = !ProcessTile(map, rX, rY, width, height);
+        //        }
 
-                        var leftDownX = Left - posSec;
-                        var leftDownY = Top + pos - 1;
-                        var leftDown = map[leftDownX, leftDownY];
-                        if (!NullFeature.IsNullFeature(leftDown))
-                        {
-                            visibleFeatures.Add(leftDown);
-                            hasSeenFeatures.Add(leftDown);
-                        }
 
-                    }
-                }
-            }
-        }
+        //        if (!blocked[leftLineBlockedIndex])
+        //        {
+        //            var lX = Left - pos;
+        //            var lY = Top;
+        //            blocked[leftLineBlockedIndex] = !ProcessTile(map, lX, lY, width, height);
+        //        }
 
-        /*
-         * value to check
-         * min is inclusive
-         * max is exclusive
-         */ 
-        private bool IsValid(int value, int min, int max)
-        {
-            return value >= 0 && value < max;
-        }
+        //        if (!blocked[downLineBlockedIndex])
+        //        {
+        //            var dX = Left;
+        //            var dY = Top + pos;
+        //            blocked[downLineBlockedIndex] = !ProcessTile(map, dX, dY, width, height);
+        //        }
+
+        //        if (!blocked[upLineBlockedIndex])
+        //        {
+        //            var uX = Left;
+        //            var uY = Top - pos;
+        //            blocked[upLineBlockedIndex] = !ProcessTile(map, uX, uY, width, height);
+        //        }
+        //        #endregion
+
+        //        #region Diagonal
+
+        //        if (!blocked[upRightLineBlockedIndex])
+        //        {
+        //            var urDiagX = Left + pos;
+        //            var urDiagY = Top - pos;
+        //            blocked[upRightLineBlockedIndex] = !ProcessTile(map, urDiagX, urDiagY, width, height);
+        //        }
+
+        //        if (!blocked[downLeftLineBlockedIndex])
+        //        {
+        //            var dlDiagX = Left - pos;
+        //            var dlDiagY = Top + pos;
+        //            blocked[downLeftLineBlockedIndex] = !ProcessTile(map, dlDiagX, dlDiagY, width, height);
+        //        }
+
+        //        if (!blocked[upLeftLineBlockedIndex])
+        //        {
+        //            var ulDiagX = Left - pos;
+        //            var ulDiagY = Top - pos;
+        //            blocked[upLeftLineBlockedIndex] = !ProcessTile(map, ulDiagX, ulDiagY, width, height);
+        //        }
+
+        //        if (!blocked[downRightLineBlockedIndex])
+        //        {
+        //            var drDiagX = Left + pos;
+        //            var drDiagY = Top + pos;
+        //            blocked[downRightLineBlockedIndex] = !ProcessTile(map, drDiagX, drDiagY, width, height);
+        //        }
+
+        //        #endregion
+        //    }
+        //}
 
     }
 }

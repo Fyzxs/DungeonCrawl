@@ -19,7 +19,8 @@ namespace GrowingTree
             GenerateRooms(level);
             GenerateHallways(level);
             GenerateDoors(level);
-
+            
+            level.RefreshFeatureGrid();
             MinimizeHallways(level);
 
             return level;
@@ -37,8 +38,8 @@ namespace GrowingTree
         private static Room GenerateRoom(Level level)
         {
             const int maxRetries = 100;
-            const int maxSize = 10;
-            const int minSize = 10;
+            const int maxSize = 8;
+            const int minSize = 3;
 
             for (var attempts = 0; attempts < maxRetries; attempts++)
             {
@@ -396,7 +397,6 @@ namespace GrowingTree
                 {
                     //Twiddle... Twiddle
                 }
-                DrawGrid.DebugDraw(level);
                 foreach (var feature in hallway.FeatureList)
                 {
                     var x = hallway.Left + feature.Left;

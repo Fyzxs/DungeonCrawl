@@ -19,6 +19,16 @@ namespace GrowingTree.Features
         internal Feature Parent = null;
         public char AssignedCharacter = '~';
 
+        public virtual bool IsPassable()
+        {
+            return false;
+        }
+
+        public virtual bool IsVisionBlocking()
+        {
+            return true;
+        }
+
         protected virtual void FillFeatureGrid(Feature[,] grid, int leftAdj, int topAdj)
         {
             grid[leftAdj + Left, topAdj + Top] = this;
