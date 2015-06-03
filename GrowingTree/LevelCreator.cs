@@ -22,6 +22,8 @@ namespace GrowingTree
             
             level.RefreshFeatureGrid();
             MinimizeHallways(level);
+            level.RefreshFeatureGrid();
+            MinimizeDoors(level);
 
             return level;
         }
@@ -393,6 +395,7 @@ namespace GrowingTree
             var map = level.FeatureGrid;
             foreach (var hallway in level.GetHallways())
             {
+                // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
                 while (ProcessHallyway(level, map, hallway))
                 {
                     //Twiddle... Twiddle
@@ -495,6 +498,45 @@ namespace GrowingTree
                 }
             }
             return pruned;
+        }
+
+
+        private static void MinimizeDoors(Level level)
+        {
+            var map = level.FeatureGrid;
+            var doors = level.GetDoors();
+            var doorIter = doors.GetEnumerator();
+            while (doorIter.MoveNext())
+            {
+                var door = doorIter.Current;
+
+                var posX = door.Left;
+                var posY = door.Top;
+                var rightPosX = posX + 1;
+                var rightPosY = posY;
+                var openCount = 0;
+                openCount += rightPosX >= level.Width || NullFeature.IsNullFeature(map[rightPosX, rightPosY]) ? 1 : 0;
+
+                var leftPosX = posX - 1;
+                var leftPosY = posY;
+                openCount += leftPosX < 0 || NullFeature.IsNullFeature(map[leftPosX, leftPosY]) ? 1 : 0;
+
+                var topPosX = posX;
+                var topPosY = posY - 1;
+                openCount += topPosY < 0 || NullFeature.IsNullFeature(map[topPosX, topPosY]) ? 1 : 0;
+
+                var bottomPosX = posX;
+                var bottomPosY = posY + 1;
+                openCount += bottomPosY >= level.Height || NullFeature.IsNullFeature(map[bottomPosX, bottomPosY]) ? 1 : 0;
+
+                if (openCount < 3)
+                {
+                    continue;
+                }
+                level.RemoveFeature(door);
+                map[posX, posY] = NullFeature.Instance;
+                
+            }
         }
         #endregion
     }
