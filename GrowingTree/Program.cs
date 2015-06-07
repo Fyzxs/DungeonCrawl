@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using GrowingTree.Character;
 using GrowingTree.Display;
 using GrowingTree.Features;
+using GrowingTree.Pathing;
 using Microsoft.Win32.SafeHandles;
 
 namespace GrowingTree
@@ -28,6 +29,8 @@ namespace GrowingTree
                 public static bool Regen = true;
                 //If the debug drawing should happen
                 public static bool Draw = false;
+                //Toggle the Heuristics
+                public static bool SearchHeuristics = false;
             }
         }
         /// <summary>
@@ -69,19 +72,21 @@ namespace GrowingTree
             level.InsertFeature(new Player(new Point(startRoom.Left + 1, startRoom.Top + 1)));
 
             var endRoom = level.GetRooms().Last();
-            level.InsertFeature(new Monster(new Point(endRoom.Left + 1, endRoom.Top + 1)));
+            level.InsertFeature(new Hunter(new Point(endRoom.Left + 1, endRoom.Top + 1)));
             while (!SystemState.ShouldQuit)
             {
                 Thread.Sleep(100);
                 Level.Instance.RefreshFeatureGrid();
-                ProcessInput();
-                DrawGrid.Draw(level);
+                if (ProcessInput())
+                {
+                    DrawGrid.Draw(level);
+                }
             }
         }
 
-        static void ProcessInput()
+        static bool ProcessInput()
         {
-            if (!Console.KeyAvailable) return;
+            if (!Console.KeyAvailable) return true;
 
             var key = Console.ReadKey(true);
             //Clear the buffer
@@ -96,19 +101,36 @@ namespace GrowingTree
                     goto case ConsoleKey.Q;//goto is being accepted as a forced 'fall through'
                 case ConsoleKey.Q:
                     SystemState.ShouldQuit = true;
-                    return;
+                    return true;
                 case ConsoleKey.D:
                     SystemState.DebugFlags.DrawAll = !SystemState.DebugFlags.DrawAll;
                     SystemState.DebugFlags.Draw = !SystemState.DebugFlags.Draw;
-
-                    return;
+                    return true;
+                case ConsoleKey.P:
+                {
+                    var monster = Level.Instance.GetMonsters().FirstOrDefault();
+                    if (monster == null)
+                    {
+                        return true;
+                    }
+                    var player = Level.Instance.GetPlayer();
+                    var startTile = Level.Instance.FeatureGrid[player.Left, player.Top];
+                    var goalTile = Level.Instance.FeatureGrid[monster.Left, monster.Top];
+                    PathFinding.CustomPathFinding(Level.Instance.FeatureGrid,
+                        startTile,
+                        goalTile);
+                    return false;
+                }
+                case ConsoleKey.H:
+                    SystemState.DebugFlags.SearchHeuristics = !SystemState.DebugFlags.SearchHeuristics;
+                    return true;
                 default:
                     Level.Instance.GetPlayer().Move(key.Key);
                     foreach (var monster in Level.Instance.GetMonsters())
                     {
                         monster.Move();
                     }
-                    return;
+                    return true;
             }
         }
 
