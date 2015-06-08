@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using GrowingTree.Character;
 using GrowingTree.Display;
 using GrowingTree.Features;
+using GrowingTree.Items;
 using GrowingTree.Pathing;
 using Microsoft.Win32.SafeHandles;
 
@@ -72,6 +73,9 @@ namespace GrowingTree
             level.InsertFeature(new Player(new Point(startRoom.Left + 1, startRoom.Top + 1)));
 
             var endRoom = level.GetRooms().Last();
+
+            level.InsertFeature(new Item(new Point(endRoom.Left + 1, endRoom.Top + 1)));
+
             level.InsertFeature(new Hunter(new Point(endRoom.Left + 1, endRoom.Top + 1)));
             while (!SystemState.ShouldQuit)
             {

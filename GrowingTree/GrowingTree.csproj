@@ -58,6 +58,7 @@
     <Compile Include="Features\Null\NullFeature.cs" />
     <Compile Include="Features\Null\NullPlayer.cs" />
     <Compile Include="Character\Player.cs" />
+    <Compile Include="Items\Item.cs" />
     <Compile Include="LevelCreator.cs" />
     <Compile Include="Pathing\PathFinding.cs" />
     <Compile Include="Point.cs" />

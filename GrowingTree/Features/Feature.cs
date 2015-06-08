@@ -6,6 +6,20 @@ using GrowingTree.Display;
 
 namespace GrowingTree.Features
 {
+    /*
+     * This is my "Game Object"
+     * I went through 24ish hours or refactoring in an actual "GameObject" class
+     * for putting in Items... It fucked it all up.
+     * 
+     * Gonna try it where 'Feature' is the most base game item.
+     * 
+     * Pretty sure it'll give me problems if I try to move to a different 
+     * UI style; but for now; this should work.
+     * 
+     * Really though; this is the first "game" I've ever attempted; 
+     * We should really expect a FEW things to be done poorly.
+     * 
+     */ 
     abstract class Feature : IComparable<Feature>
     {
         /*
