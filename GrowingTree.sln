@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrowingTree", "GrowingTree\GrowingTree.csproj", "{B94B0CD7-94DF-4DC0-B192-5F46884A3952}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrettyPictures", "PrettyPictures\PrettyPictures.csproj", "{75B9D857-432D-4304-AA42-3CC2EAA8E87C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B94B0CD7-94DF-4DC0-B192-5F46884A3952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B94B0CD7-94DF-4DC0-B192-5F46884A3952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B94B0CD7-94DF-4DC0-B192-5F46884A3952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75B9D857-432D-4304-AA42-3CC2EAA8E87C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B9D857-432D-4304-AA42-3CC2EAA8E87C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B9D857-432D-4304-AA42-3CC2EAA8E87C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B9D857-432D-4304-AA42-3CC2EAA8E87C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
