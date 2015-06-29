@@ -8,7 +8,7 @@ namespace PrettyPictures.Spites.Map
 {
     class FloorTile : MapSprite
     {
-        public FloorTile() : base(33, 33, 30, 30)
+        public FloorTile() : base(32, 32, 16, 16)
         {
         }
     }

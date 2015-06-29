@@ -9,7 +9,7 @@ namespace PrettyPictures.Spites.Map
 {
     abstract class MapSprite : Sprite
     {
-        private const string MapSpriteLocation = "scbw_tiles.png";
+        private const string MapSpriteLocation = "Phoebus_16x16_TextClean.png";
 
         protected MapSprite(int left, int top, int width, int height) : base(left, top, width, height)
         {
