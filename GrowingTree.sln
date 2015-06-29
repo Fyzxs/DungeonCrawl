@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrowingTree", "GrowingTree\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrettyPictures", "PrettyPictures\PrettyPictures.csproj", "{75B9D857-432D-4304-AA42-3CC2EAA8E87C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameEngine", "GameEngine\GameEngine.csproj", "{6B65F055-AC52-4062-AB49-22CDF598333A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameEngineConsole", "GameEngineConsole\GameEngineConsole.csproj", "{B058FDC2-C2E9-47D7-A2D1-A611114D3703}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{75B9D857-432D-4304-AA42-3CC2EAA8E87C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75B9D857-432D-4304-AA42-3CC2EAA8E87C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75B9D857-432D-4304-AA42-3CC2EAA8E87C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B65F055-AC52-4062-AB49-22CDF598333A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B65F055-AC52-4062-AB49-22CDF598333A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B65F055-AC52-4062-AB49-22CDF598333A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B65F055-AC52-4062-AB49-22CDF598333A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B058FDC2-C2E9-47D7-A2D1-A611114D3703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B058FDC2-C2E9-47D7-A2D1-A611114D3703}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B058FDC2-C2E9-47D7-A2D1-A611114D3703}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B058FDC2-C2E9-47D7-A2D1-A611114D3703}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
