@@ -29,6 +29,44 @@ namespace GameEngineConsole
                 drawGrid.CurrentBackground = orgColor;
             }
         }
+
+        class HallwayDraw : IDrawImpl
+        {
+            public void DrawImpl(Feature feature, DrawScreen drawScreen)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        class DoorDraw : IDrawImpl
+        {
+            public void DrawImpl(Feature feature, DrawScreen drawScreen)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        class FeatureDraw : IDrawImpl, IDraw
+        {
+            public void DrawImpl(Feature feature, DrawScreen drawScreen)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Draw(Feature feature, DrawScreen drawScreen)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        class RoomDraw : IDrawImpl
+        {
+            public void DrawImpl(Feature feature, DrawScreen drawScreen)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         static DrawScreenImpl()
         {
             DrawImplDictionary.Add(typeof(FloorTile), new FloorTileDraw());
